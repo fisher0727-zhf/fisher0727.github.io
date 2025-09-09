@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>肿瘤患者生育力保护决策辅助系统</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 首页 -->
+    <header>
+        <h1>肿瘤患者生育力保护决策辅助系统</h1>
+    </header>
+
+    <!-- 路径选择页面 -->
+    <section id="decision-path-page">
+        <h2>填写患者信息</h2>
+        <form id="patient-form">
+            <label for="gender">患者性别：</label>
+            <select id="gender">
+                <option value="male">男性</option>
+                <option value="female">女性</option>
+            </select><br>
+
+            <label for="age">年龄：</label>
+            <input type="number" id="age" placeholder="年龄" required><br>
+
+            <label for="diagnosis">病理诊断：</label>
+            <input type="text" id="diagnosis" placeholder="病理诊断" required><br>
+
+            <label for="staging">疾病分期：</label>
+            <select id="staging">
+                <option value="I">I期</option>
+                <option value="II">II期</option>
+                <option value="III">III期</option>
+                <option value="IV">IV期</option>
+            </select><br>
+
+            <label for="marital-status">婚姻状况：</label>
+            <select id="marital-status">
+                <option value="married">已婚</option>
+                <option value="single">未婚</option>
+                <option value="widowed">丧偶</option>
+                <option value="other">其他</option>
+            </select><br>
+
+            <label for="children">子女数量：</label>
+            <input type="number" id="children" placeholder="子女数量" required><br>
+
+            <h3>选择治疗手段</h3>
+            <label for="surgery">术式：</label>
+            <input type="text" id="surgery" placeholder="术式"><br>
+
+            <label for="chemotherapy">化疗药物及剂量：</label>
+            <input type="text" id="chemotherapy" placeholder="药物与剂量"><br>
+
+            <label for="radiotherapy">放疗部位及剂量：</label>
+            <input type="text" id="radiotherapy" placeholder="放疗部位与剂量"><br>
+
+            <label for="treatment-start">治疗开始时间：</label>
+            <input type="date" id="treatment-start"><br>
+
+            <h3>疾病史与治疗史</h3>
+            <label for="reproductive-disease">以前是否有影响生育力的疾病？</label>
+            <select id="reproductive-disease">
+                <option value="yes">有</option>
+                <option value="no">无</option>
+            </select><br>
+
+            <label for="reproductive-drug">以前是否服用过影响生育力的药物？</label>
+            <select id="reproductive-drug">
+                <option value="yes">有</option>
+                <option value="no">无</option>
+            </select><br>
+
+            <label for="reproductive-treatment">以前是否接受过影响生育力的治疗？</label>
+            <select id="reproductive-treatment">
+                <option value="yes">有</option>
+                <option value="no">无</option>
+            </select><br>
+
+            <button type="submit">提交</button>
+        </form>
+    </section>
+
+    <!-- 评估结果页面 -->
+    <section id="result-page" style="display: none;">
+        <h2>生育力风险评估结果</h2>
+        <p>风险等级：<span id="risk-level"></span></p>
+        <h3>推荐生育力保护技术</h3>
+        <div id="recommendation"></div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
