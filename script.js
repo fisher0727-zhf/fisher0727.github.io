@@ -20,20 +20,42 @@ document.getElementById("patient-form").addEventListener("submit", function(even
     document.getElementById("decision-path-page").style.display = "none";
     document.getElementById("result-page").style.display = "block";
 
-    // 显示风险等级和推荐意见
+    // 显示风险等级
     document.getElementById("risk-level").innerText = riskLevel.level;
+
+    // 显示推荐意见
     document.getElementById("recommendation").innerText = riskLevel.recommendation;
+
+    // 显示风险因素
+    if (riskLevel.level === "低风险") {
+        document.getElementById("risk-factors").innerText = "无";
+    } else {
+        document.getElementById("risk-factors").innerText = riskLevel.riskFactors.join(", ");
+    }
 });
 
 // 生育力风险计算函数
 function calculateRiskLevel(gender, age, diagnosis, staging, diseaseHistory, drugHistory, treatmentHistory, surgery, chemotherapy, radiotherapy) {
-    let riskLevel = { level: "", recommendation: "" };
-    let reasons = [];
+    let riskLevel = { level: "", recommendation: "", riskFactors: [] };
+
+    // 判断疾病史和治疗史（如果选择“有”，则为高风险）
+    if (diseaseHistory === "yes") {
+        riskLevel.level = "高风险";
+        riskLevel.riskFactors.push("以前有影响生育力的疾病");
+    }
+    if (drugHistory === "yes") {
+        if (riskLevel.level !== "高风险") riskLevel.level = "高风险";
+        riskLevel.riskFactors.push("以前服用过影响生育力的药物");
+    }
+    if (treatmentHistory === "yes") {
+        if (riskLevel.level !== "高风险") riskLevel.level = "高风险";
+        riskLevel.riskFactors.push("以前接受过影响生育力的治疗");
+    }
 
     // 判断年龄
     if ((gender === "female" && age > 40) || (gender === "male" && age > 45)) {
-        riskLevel.level = "高风险";
-        reasons.push("年龄大于40岁（女性）或45岁（男性）");
+        if (riskLevel.level !== "高风险") riskLevel.level = "高风险";
+        riskLevel.riskFactors.push("年龄大于40岁（女性）或45岁（男性）");
     }
 
     // 判断疾病诊断和术式
@@ -43,7 +65,7 @@ function calculateRiskLevel(gender, age, diagnosis, staging, diseaseHistory, dru
     ];
     if (highRiskConditions.some(item => diagnosis.includes(item) || surgery.includes(item))) {
         if (riskLevel.level !== "高风险") riskLevel.level = "高风险";
-        reasons.push(`疾病诊断或术式为高风险，如: ${diagnosis} / ${surgery}`);
+        riskLevel.riskFactors.push(`疾病诊断或术式为高风险，如: ${diagnosis} / ${surgery}`);
     }
 
     // 判断化疗药物、放疗、疾病史、药物史等
@@ -53,19 +75,29 @@ function calculateRiskLevel(gender, age, diagnosis, staging, diseaseHistory, dru
 
     if (lowRiskDrugs.some(drug => chemotherapy.includes(drug))) {
         if (riskLevel.level !== "高风险") riskLevel.level = "低风险";
-        reasons.push("化疗药物为低风险，如" + chemotherapy);
+        riskLevel.riskFactors.push("化疗药物为低风险，如" + chemotherapy);
     }
     if (mediumRiskDrugs.some(drug => chemotherapy.includes(drug))) {
         if (riskLevel.level !== "高风险") riskLevel.level = "中风险";
-        reasons.push("化疗药物为中风险，如" + chemotherapy);
+        riskLevel.riskFactors.push("化疗药物为中风险，如" + chemotherapy);
     }
     if (highRiskDrugs.some(drug => chemotherapy.includes(drug))) {
         if (riskLevel.level !== "高风险") riskLevel.level = "高风险";
-        reasons.push("化疗药物为高风险，如" + chemotherapy);
+        riskLevel.riskFactors.push("化疗药物为高风险，如" + chemotherapy);
     }
 
-    // 生成推荐意见
-    riskLevel.recommendation = `根据以下风险因素，您的生育力风险为：${riskLevel.level}，涉及的因素有：\n` + reasons.join("\n");
+    // 如果没有任何高风险因素
+    if (riskLevel.level === "") {
+        riskLevel.level = "低风险";
+        riskLevel.riskFactors.push("无高风险因素");
+    }
+
+    // 汇总推荐意见
+    if (riskLevel.level === "低风险") {
+        riskLevel.recommendation = "生育力保护技术推荐意见：不推荐";
+    } else {
+        riskLevel.recommendation = "生育力保护技术推荐意见：推荐";
+    }
 
     return riskLevel;
 }
